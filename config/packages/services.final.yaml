@@ -1,0 +1,8 @@
+# config/packages/services.final.yaml
+services:
+  App\Service\StoryVideoService: ~
+  App\Service\AuditLogger: ~
+  App\Controller\Api\StoryVideoController: ~
+
+  App\Command\ExportStatsCommand: ~
+  App\Command\SessionsCleanupCommand: ~

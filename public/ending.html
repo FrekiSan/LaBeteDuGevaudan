@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fin de partie</title>
+  <link rel="stylesheet" href="./css/topbar.css" />
+</head>
+<body>
+  <header class="eg-topbar">
+    <div>ðŸŽ‰ Fin</div>
+    <div class="eg-timer">â± <span id="global-timer">00:00:00</span></div>
+  </header>
+  <main>
+    <h1>Bravo !</h1>
+    <p>Temps total : <span id="final-time">â€”</span></p>
+    <a href="classement.html">Voir le classement</a>
+  </main>
+
+  <script type="module">
+    import { storage } from './js/apiClient.js';
+    import { mountGlobalTimer } from './js/timer.js';
+    mountGlobalTimer('#global-timer');
+    const start = storage.getTimerStart();
+    if (start) {
+      const ms = Date.now() - new Date(start).getTime();
+      const s = Math.floor(ms / 1000);
+      const h = Math.floor(s / 3600), m = Math.floor((s%3600)/60), sec = s%60;
+      const pad = (n)=> String(n).padStart(2,'0');
+      document.getElementById('final-time').textContent = `${pad(h)}:${pad(m)}:${pad(sec)}`;
+    }
+  </script>
+</body>
+</html>

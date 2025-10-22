@@ -1,0 +1,4 @@
+# config/routes/api.story.yaml
+api_story_video:
+  resource: '../../src/Controller/Api/StoryVideoController.php'
+  type: attribute

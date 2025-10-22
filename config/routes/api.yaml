@@ -1,0 +1,4 @@
+# config/routes/api.yaml
+api_controllers:
+  resource: '../../src/Controller/Api/'
+  type: attribute

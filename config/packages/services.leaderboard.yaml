@@ -1,0 +1,4 @@
+# config/packages/services.leaderboard.yaml
+services:
+  App\Service\LeaderboardRebuilder: ~
+  App\Command\LeaderboardRebuildCommand: ~
