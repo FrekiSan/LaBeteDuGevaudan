@@ -17,6 +17,10 @@ function formatTime(ms) {
 
 // Reset timer
 document.getElementById("reset-timer-btn")?.addEventListener("click", () => {
-  localStorage.removeItem("startTime");
+  try {
+    localStorage.removeItem('escape_timer_state');
+    localStorage.removeItem('startTime');
+    localStorage.removeItem('globalTimerStartISO');
+  } catch (err) {}
   window.location.href = "index.html";
 });

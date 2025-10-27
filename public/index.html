@@ -121,7 +121,7 @@
   <main>
     <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
     <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
+    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true" tabindex="-1">Démarrer</a>
 
   </main>
 
@@ -134,76 +134,11 @@
     </a>
 </p>
   </footer>
-  
+
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
-
-<!-- 🔲 Overlay -->
-<div id="modalOverlay" class="modal-overlay"></div>
-
-<!-- 🔐 Modal Login -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
-</div>
-
-<!-- 📇 Modal Crédits -->
-<div id="modalCredits" class="modal">
-  <h2>Crédits</h2>
-  <p>Escape Game réalisé par <b>Groom Escape</b> (<i>Yann S. & Maxime "Freki" Orange</i>)<br>
-     Codé par <b>Anima'Escape</b> (<i>Maxime "Freki" Orange</i>)<br>
-     Acteurs : Hafid D., Yann S., Maxime "Freki" Orange<br>
-     <i>Escape réalisé en collaboration avec la ville de Clermont-Ferrand (février 2020)</i>
-  </p>
-</div>
-
-<!-- 📬 Modal Contact -->
-<div id="modalContact" class="modal">
-  <h2>Contact</h2>
-  <form>
-    <input type="text" placeholder="Votre nom" required><br>
-    <input type="email" placeholder="Votre email" required><br>
-    <textarea placeholder="Votre message" required></textarea><br>
-    <button type="submit">Envoyer</button>
-  </form>
-</div>
-
-<!-- 🏆 Modal Classement -->
-<div id="classementModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('classementModal')">&times;</span>
-    <h2>Classement</h2>
-    <ul id="classementList" class="leaderboard"></ul>
-  </div>
-</div>
 
 </body>
 </html>

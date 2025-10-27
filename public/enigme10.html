@@ -153,53 +153,6 @@ revealStory(); scheduleRedirect('enigme11.html',70000); });
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
 <script src="assets/js/global_timer.js" defer></script>
-  <!-- 🔲 Overlay -->
-<div id="modalOverlay" class="modal-overlay"></div>
-
-<!-- 🔐 Modal Login -->
-<div id="loginModal" class="modal">
-  <h2>Connexion</h2>
-  <form id="loginForm">
-    <input type="text" name="username" placeholder="Pseudo" required><br>
-    <input type="email" name="email" placeholder="Email (optionnel)"><br>
-    <input type="password" name="password" placeholder="Mot de passe" required><br>
-    <button type="submit">Se connecter</button>
-    <button type="button" id="registerBtn">Créer un compte</button>
-  </form>
-  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
-</div>
-
-<!-- 📇 Modal Crédits -->
-<div id="modalCredits" class="modal">
-  <h2>Crédits</h2>
-  <p>Escape Game réalisé par <b>Groom Escape</b> (<i>Yann S. & Maxime "Freki" Orange</i>)<br>
-     Codé par <b>Anima'Escape</b> (<i>Maxime "Freki" Orange</i>)<br>
-     Acteurs : Hafid D., Yann S., Maxime "Freki" Orange<br>
-     <i>Escape réalisé en collaboration avec la ville de Clermont-Ferrand (février 2020)</i>
-  </p>
-</div>
-
-<!-- 📬 Modal Contact -->
-<div id="modalContact" class="modal">
-  <h2>Contact</h2>
-  <form>
-    <input type="text" placeholder="Votre nom" required><br>
-    <input type="email" placeholder="Votre email" required><br>
-    <textarea placeholder="Votre message" required></textarea><br>
-    <button type="submit">Envoyer</button>
-  </form>
-</div>
-
-<!-- 🏆 Modal Classement -->
-<div id="classementModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('classementModal')">&times;</span>
-    <h2>Classement</h2>
-    <ul id="classementList" class="leaderboard"></ul>
-  </div>
-</div>
-
-
 <script>
   (function(){
     function setAuthUI(isLoggedIn, username) {
@@ -250,15 +203,14 @@ revealStory(); scheduleRedirect('enigme11.html',70000); });
   })();
 </script>
 
-</body>
-</html>
-
 <script>(function(){
   var el=document.getElementById('piano-preview'); if(!el) return;
   var seq=[];
   document.getElementById('piano')?.addEventListener('click',function(e){
     var b=e.target.closest('button[data-note]'); if(!b) return;
-    seq.push(b.dataset.note || '?'); 
+    seq.push(b.dataset.note || '?');
     el.textContent='Votre saisie : '+seq.join(' · ');
   });
 })();</script>
+</body>
+</html>

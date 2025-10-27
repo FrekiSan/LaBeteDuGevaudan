@@ -1,61 +1,90 @@
+(function(){
+  const TIMER_STATE_KEY = 'escape_timer_state';
 
-// classement.js : gère l'enregistrement et l'affichage du classement des joueurs
-
-document.addEventListener("DOMContentLoaded", () => {
-  const submitBtn = document.getElementById("submitScore");
-  const playerInput = document.getElementById("playerName");
-  const finalTime = document.getElementById("finalTime");
-  const leaderboard = document.getElementById("leaderboard");
-
-  // Affiche le temps final
-  const startTime = localStorage.getItem("startTime");
-  if (startTime && finalTime) {
-    const elapsed = Date.now() - startTime;
-    const minutes = Math.floor(elapsed / 60000).toString().padStart(2, '0');
-    const seconds = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
-    finalTime.textContent = `⏱ Temps : ${minutes}:${seconds}`;
+  function readTimerState(){
+    try {
+      const raw = localStorage.getItem(TIMER_STATE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return (parsed && typeof parsed === 'object') ? parsed : null;
+    } catch (err) {
+      return null;
+    }
   }
 
-  // Enregistrer le score
-  submitBtn?.addEventListener("click", () => {
-    const name = playerInput.value.trim();
-    if (!name) return alert("Veuillez entrer un pseudo.");
+  function computeElapsedMs(){
+    const state = readTimerState();
+    if (!state) return null;
+    let total = Number(state.totalElapsedMs || 0);
+    if (state.currentStartISO) {
+      const start = Date.parse(state.currentStartISO);
+      if (!Number.isNaN(start)) {
+        total += Math.max(0, Date.now() - start);
+      }
+    }
+    return total;
+  }
 
-    const startTime = localStorage.getItem("startTime");
-    if (!startTime) return alert("Temps non disponible.");
+  function formatDuration(ms){
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    const millis = Math.floor(ms % 1000);
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(millis).padStart(3, '0')}`;
+  }
 
-    const elapsed = Date.now() - startTime;
-    const newEntry = { name, time: elapsed };
+  async function fetchLeaderboard(){
+    const res = await fetch('/api/leaderboard.php', { credentials: 'include' });
+    if (!res.ok) throw new Error('leaderboard_http_error');
+    return res.json();
+  }
 
-    // Récupération des scores existants
-    let scores = JSON.parse(localStorage.getItem("leaderboard") || "[]");
-    scores.push(newEntry);
+  function renderLeaderboard(list, rows){
+    if (!rows.length) {
+      list.innerHTML = '<li>Aucun joueur classé pour le moment.</li>';
+      return;
+    }
+    list.innerHTML = '';
+    rows.forEach((row, index) => {
+      const li = document.createElement('li');
+      if (index === 0) li.classList.add('gold');
+      else if (index === 1) li.classList.add('silver');
+      else if (index === 2) li.classList.add('bronze');
+      const ms = Number(row.total_elapsed_ms || 0);
+      li.textContent = `${index + 1}. ${row.username} — ${formatDuration(ms)}`;
+      list.appendChild(li);
+    });
+  }
 
-    // Tri des meilleurs temps (plus petit d'abord)
-    scores.sort((a, b) => a.time - b.time);
-    scores = scores.slice(0, 10); // Top 10
+  async function loadClassement(listId = 'classementList'){
+    const list = document.getElementById(listId);
+    if (!list) return;
+    list.innerHTML = '<li>Chargement...</li>';
+    try {
+      const data = await fetchLeaderboard();
+      const rows = Array.isArray(data.rows) ? data.rows : [];
+      renderLeaderboard(list, rows);
+    } catch (err) {
+      list.innerHTML = '<li>Classement indisponible.</li>';
+    }
+  }
 
-    localStorage.setItem("leaderboard", JSON.stringify(scores));
-    window.location.href = "classement.html";
+  window.loadClassement = loadClassement;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const finalTime = document.getElementById('finalTime');
+    if (finalTime) {
+      const elapsed = computeElapsedMs();
+      if (elapsed !== null) {
+        finalTime.textContent = `⏱ Temps : ${formatDuration(elapsed)}`;
+      }
+    }
+
+    const showButton = document.getElementById('showClassement');
+    showButton?.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (typeof window.openModal === 'function') {
+        openModal('classementModal');
+      }
+    });
   });
-
-  // Affichage du classement
-  if (leaderboard) {
-    const scores = JSON.parse(localStorage.getItem("leaderboard") || "[]");
-
-    leaderboard.innerHTML = scores.map((entry, index) => {
-      const minutes = Math.floor(entry.time / 60000).toString().padStart(2, '0');
-      const seconds = Math.floor((entry.time % 60000) / 1000).toString().padStart(2, '0');
-
-      let medalClass = "";
-      if (index === 0) medalClass = "gold";
-      else if (index === 1) medalClass = "silver";
-      else if (index === 2) medalClass = "bronze";
-
-      return`
-        <li class="${medalClass}">
-          <strong> ${index + 1}.</strong> ${entry.name} – ${minutes}:${seconds}
-        </li>`;
-    }).join("");
-  }
-});
+})();
