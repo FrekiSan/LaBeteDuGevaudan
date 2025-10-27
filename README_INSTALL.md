@@ -27,3 +27,21 @@ Ce paquet contient :
 - Le timer est piloté par `#timer` (format mm:ss.mmm). Ne plus utiliser `#time` ni le bouton "Reset".
 - Le Top 100 est chargé automatiquement quand la modale Classement s'ouvre.
 - Le bouton Démarrer est désactivé tant que l'utilisateur n'est pas connecté.
+
+## Démarrage rapide
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+# Ouvre: http://localhost:8080
+# Back Tomcat (si exposé): http://localhost:8081
+```
+
+### Comptes de démonstration
+
+- Email: demo@gevaudan.test
+- Mot de passe: demo1234
+
+Les données de démo sont chargées automatiquement via `db/init/seed.sql`.
+
+*(Pense à adapter les ports/URLs si différents dans ton `docker-compose.yaml`.)*
