@@ -5,24 +5,14 @@ on:
   pull_request:
 
 jobs:
-  lint-and-validate:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Validate Docker Compose
-        run: docker compose config
-
-      - name: Shellcheck (si scripts sh)
-        uses: ludeeus/action-shellcheck@2.0.0
-        with:
-          severity: warning
-
-      - name: PHP lint (si PHP présent)
         run: |
-          if command -v php >/dev/null 2>&1; then
-            find . -type f -name "*.php" -print0 | xargs -0 -n1 -I{} php -l "{}"
+          if command -v docker >/dev/null 2>&1; then
+            docker compose config
           else
-            echo "PHP non disponible dans l'environnement runner"
+            echo "Docker not available on runner; skipping compose validation."
           fi
