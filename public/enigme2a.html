@@ -1,11 +1,77 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Index</title>
+  <title>Énigme 2</title>
   <link rel="icon" href="assets/img/favicon.ico">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+   <script>
+    const correctStates = [0, 1, 1, 1,
+                           0, 0, 1, 1,
+                           1, 0, 0, 0,
+                           1, 1, 0, 0];
+    let switches = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      switches = Array.from(document.querySelectorAll(".switch"));
+      switches.forEach((el, i) => {
+        el.addEventListener("click", () => toggleSwitch(i));
+      });
+    });
+
+    function toggleSwitch(index) {
+      const el = switches[index];
+      const current = el.dataset.state === "1" ? 1 : 0;
+      const newState = current === 1 ? 0 : 1;
+      el.dataset.state = newState;
+      el.textContent = newState;
+    }
+
+    function validate() {
+      const userState = switches.map(sw => parseInt(sw.dataset.state || "0"));
+      const correct = correctStates.every((val, idx) => val === userState[idx]);
+      if (correct) {
+        const board = document.querySelector(".switch-board");
+        if (board) board.style.display = "none";
+        document.getElementById("video").style.display = "block";
+        setTimeout(() => {
+          window.location.href = "enigme2b.html";
+        }, 12000);
+      } else {
+        alert("Mauvaise combinaison !");
+      }
+    }
+  </script>
+  <style>
+    main {
+      text-align: center;
+    }
+    .switch {
+      display: inline-block;
+      margin: 10px;
+      width: 60px;
+      height: 60px;
+      font-size: 2em;
+      line-height: 60px;
+      background-color: #222;
+      color: white;
+      border: 2px solid #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+    .switch-board {
+      margin: 30px 0;
+    }
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
 
 <style>
 .spoiler-wrap{
@@ -106,8 +172,7 @@
 </script>
 
 </head>
-<body>
-  <header>
+<header>
   <img src="assets/img/logo.png" alt="logo" class="logo">
   <nav class="header-links">
     <a href="#" id="openLogin" data-auth="guest" onclick="openModal('loginModal')">Se connecter</a>
@@ -116,16 +181,42 @@
     <a href="#" id="openCredits">Crédits</a>
     <a href="#" id="openClassement">Classement</a>
   </nav>
-  </header>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
+</header>
 
-  <main>
-    <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
-    <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
+  <h1>Énigme 2</h1>
 
-  </main>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/Lh2aguSO2Qs"  allowfullscreen></iframe>
+  </div>
 
-  <footer>
+    <div class="switch-board">
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div><br>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div><Br>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div><br>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <div class="switch" data-state="0">0</div>
+      <br>
+      <button onclick="validate()">Valider</button>
+    </div>
+
+       <div id="video" style="display:none;">
+      <img src="assets/img/Fin_Enigme_2_3_5_6/ImageFinalEnigme2-1_Puissance4_.jpg">
+      </div>
+
+    <footer>
+    <!--Preuve vérificator-->
 <p>
     <a href="https://jigsaw.w3.org/css-validator/check/referer">
         <img style="border:0;width:88px;height:31px"
@@ -133,46 +224,28 @@
             alt="Valid CSS!" />
     </a>
 </p>
-  </footer>
-  
+  </footer> 
+
+
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
-
-<!-- 🔲 Overlay -->
+<script src="assets/js/global_timer.js" defer></script>
+  <!-- 🔲 Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
 
 <!-- 🔐 Modal Login -->
 <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <h2>Connexion</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Pseudo" required><br>
+    <input type="email" name="email" placeholder="Email (optionnel)"><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+    <button type="button" id="registerBtn">Créer un compte</button>
+  </form>
+  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
 </div>
 
 <!-- 📇 Modal Crédits -->
@@ -205,5 +278,8 @@
   </div>
 </div>
 
+
+
+<script src="assets/js/global_timer.js" defer></script>
 </body>
 </html>

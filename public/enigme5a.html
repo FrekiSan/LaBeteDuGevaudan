@@ -1,11 +1,49 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Index</title>
+  <title>Énigme 5</title>
   <link rel="icon" href="assets/img/favicon.ico">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="assets/js/zoneTexteHandler.js" defer></script>
+  <script>
+    function validate() {
+      checkZoneTexteAnswer("answer", ["матрёшка"], () => {
+        window.location.href = "enigme5b.html";
+      });
+    }
+  </script>
+    <style>
+    main {
+      text-align: center;
+    }
+    #image {
+      margin: 20px auto;
+    }
+    #input-container {
+      margin: 20px auto;
+    }
+    input[type="text"] {
+      font-size: 1.2em;
+      padding: 10px;
+      width: 300px;
+      text-align: center;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
 
 <style>
 .spoiler-wrap{
@@ -116,16 +154,28 @@
     <a href="#" id="openCredits">Crédits</a>
     <a href="#" id="openClassement">Classement</a>
   </nav>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
   </header>
 
-  <main>
-    <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
-    <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
+  <h1>Énigme 5</h1>
 
-  </main>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/9aZGmRbL8RQ"  allowfullscreen></iframe>
+  </div>
 
-  <footer>
+    <div id="input-container">
+      <p>Entrez votre réponse :</p>
+      <input type="text" id="answer" placeholder="Réponse">
+      <br>
+      <button onclick="validate()">Valider</button>
+    </div>
+
+     <div id="video" style="display:none;">
+      <img src="assets/img/Fin_Enigme_2_3_5_6/ImageFinalEnigme5-1_Poupées-Russe_.jpg">
+      </div>
+
+    <footer>
+    <!--Preuve vérificator-->
 <p>
     <a href="https://jigsaw.w3.org/css-validator/check/referer">
         <img style="border:0;width:88px;height:31px"
@@ -134,45 +184,40 @@
     </a>
 </p>
   </footer>
-  
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
+<script src="assets/js/global_timer.js" defer></script>
 
+  <script>
+
+  observeLockee("lockee1", () => {
+    document.getElementById("second-lockee").style.display = "block";
+    observeLockee("second-lockee", () => {
+      const video = document.getElementById("video-histoire");
+      if (video) video.style.display = "block";
+      setTimeout(() => {
+        window.location.href = "enigme6.html";
+      }, 120000);
+    });
+  });
+
+</script>
 <!-- 🔲 Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
 
 <!-- 🔐 Modal Login -->
 <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <h2>Connexion</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Pseudo" required><br>
+    <input type="email" name="email" placeholder="Email (optionnel)"><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+    <button type="button" id="registerBtn">Créer un compte</button>
+  </form>
+  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
 </div>
 
 <!-- 📇 Modal Crédits -->
@@ -205,5 +250,8 @@
   </div>
 </div>
 
+
+
+<script src="assets/js/global_timer.js" defer></script>
 </body>
 </html>

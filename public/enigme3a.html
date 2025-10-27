@@ -1,11 +1,49 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Index</title>
+  <title>Énigme 3</title>
   <link rel="icon" href="assets/img/favicon.ico">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+      <script src="assets/js/zoneTexteHandler.js" defer></script>
+  <script>
+    function validate() {
+      checkZoneTexteAnswer("code", ["1993"], () => {
+        window.location.href = "enigme3b.html";
+      });
+    }
+  </script>
+  <style>
+    main {
+      text-align: center;
+    }
+    #image {
+      margin: 20px auto;
+    }
+    #input-container {
+      margin: 20px auto;
+    }
+    input[type="text"] {
+      font-size: 1.5em;
+      padding: 10px;
+      width: 150px;
+      text-align: center;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
 
 <style>
 .spoiler-wrap{
@@ -108,6 +146,8 @@
 </head>
 <body>
   <header>
+    <img src="assets/img/logo.png" alt="logo" class="logo">
+<div class="header-links">
   <img src="assets/img/logo.png" alt="logo" class="logo">
   <nav class="header-links">
     <a href="#" id="openLogin" data-auth="guest" onclick="openModal('loginModal')">Se connecter</a>
@@ -116,16 +156,29 @@
     <a href="#" id="openCredits">Crédits</a>
     <a href="#" id="openClassement">Classement</a>
   </nav>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
   </header>
 
-  <main>
-    <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
-    <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
+  <h1>Énigme 3</h1>
 
-  </main>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/OHbRHf8XoIY"  allowfullscreen></iframe>
+  </div>
 
-  <footer>
+    <div id="input-container">
+      <p>Entrez le code :</p>
+      <input type="text" id="code" placeholder="0000">
+      <br>
+      <button onclick="validate()">Valider</button>
+    </div>
+
+     <div id="video" style="display:none;">
+      <img src="assets/img/Fin_Enigme_2_3_5_6/ImageFinalEnigme3-1_Cercle_.jpg">
+      </div>
+
+  
+    <footer>
+    <!--Preuve vérificator-->
 <p>
     <a href="https://jigsaw.w3.org/css-validator/check/referer">
         <img style="border:0;width:88px;height:31px"
@@ -133,46 +186,27 @@
             alt="Valid CSS!" />
     </a>
 </p>
-  </footer>
+  </footer>  
   
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
-
-<!-- 🔲 Overlay -->
+<script src="assets/js/global_timer.js" defer></script>
+  <!-- 🔲 Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
 
 <!-- 🔐 Modal Login -->
 <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <h2>Connexion</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Pseudo" required><br>
+    <input type="email" name="email" placeholder="Email (optionnel)"><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+    <button type="button" id="registerBtn">Créer un compte</button>
+  </form>
+  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
 </div>
 
 <!-- 📇 Modal Crédits -->
@@ -204,6 +238,59 @@
     <ul id="classementList" class="leaderboard"></ul>
   </div>
 </div>
+
+
+<script src="assets/js/global_timer.js" defer></script>
+
+<script>
+  (function(){
+    function setAuthUI(isLoggedIn, username) {
+      var loginLink = document.querySelector('a[onclick*="openModal(\'loginModal\')"]');
+      var logoutBtn = document.getElementById("logoutBtn");
+      if (isLoggedIn) {
+        if (loginLink) loginLink.style.display = "none";
+        if (logoutBtn) {
+          logoutBtn.style.display = "inline-block";
+          logoutBtn.textContent = "Se déconnecter " + (username ? "(" + username + ")" : "(joueur)");
+        }
+      } else {
+        if (loginLink) loginLink.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+      }
+    }
+    function getCurrentUser() {
+      try { return JSON.parse(localStorage.getItem("currentUser") || "null"); }
+      catch (e) { return null; }
+    }
+    function initAuthBindings() {
+      var loginForm = document.getElementById("loginForm");
+      if (loginForm) {
+        loginForm.addEventListener("submit", function(e){
+          e.preventDefault();
+          var data = {};
+          try {
+            var fd = new FormData(loginForm);
+            fd.forEach(function(v,k){ data[k]=v; });
+          } catch (e) {}
+          var user = { username: data.username || data.email || "joueur", email: data.email || "", ts: Date.now() };
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          setAuthUI(true, user.username);
+          if (typeof closeModal === "function") closeModal("loginModal");
+        });
+      }
+      var logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", function(){
+          localStorage.removeItem("currentUser");
+          setAuthUI(false);
+        });
+      }
+      var u = getCurrentUser();
+      setAuthUI(!!u, u && u.username);
+    }
+    document.addEventListener("DOMContentLoaded", initAuthBindings);
+  })();
+</script>
 
 </body>
 </html>

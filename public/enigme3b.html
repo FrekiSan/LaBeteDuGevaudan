@@ -1,11 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Index</title>
+  <title>Énigme 3</title>
   <link rel="icon" href="assets/img/favicon.ico">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="assets/js/codeCouleurHandler.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      setupColorCode(["vert", "bleu", "jaune", "rouge"], () => {
+        const __v=document.getElementById("video");if(__v){__v.style.display="block";}
+revealStory(); scheduleRedirect('enigme4.html',70000)});
+    });
+  </script>
+  
+
 
 <style>
 .spoiler-wrap{
@@ -105,6 +116,8 @@
 })();
 </script>
 
+<script src="assets/js/auth.fix.js" defer></script>
+<script src="assets/js/flow.fix.js" defer></script>
 </head>
 <body>
   <header>
@@ -116,16 +129,47 @@
     <a href="#" id="openCredits">Crédits</a>
     <a href="#" id="openClassement">Classement</a>
   </nav>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
   </header>
 
-  <main>
-    <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
-    <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
+  <h1>Énigme 3-2</h1>
+<div class="spoiler spoiler-block"><img src="assets/img/Fin_Enigme_2_3_5_6/ImageFinalEnigme3-1_Cercle_.jpg" style="max-width:100%;height:auto" alt="Image indice (spoiler)"></div>
 
-  </main>
 
-  <footer>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/OHbRHf8XoIY"  allowfullscreen></iframe>
+  <div id="answerEchoColors" style="margin:8px 0;font-weight:bold;color:#f39c12"></div>
+
+   <div id="color-palette" style="margin: 1em 0;">
+  <button class="color-btn" style="background:red" onclick="pickColor('rouge')"></button>
+  <button class="color-btn" style="background:orange" onclick="pickColor('orange')"></button>
+  <button class="color-btn" style="background:yellow" onclick="pickColor('jaune')"></button>
+  <button class="color-btn" style="background:green" onclick="pickColor('vert')"></button>
+  <button class="color-btn" style="background:blue" onclick="pickColor('bleu')"></button>
+  <button class="color-btn" style="background:violet" onclick="pickColor('violet')"></button>
+  <button class="color-btn" style="background:indigo" onclick="pickColor('indigo')"></button>
+  <button class="color-btn" style="background:pink" onclick="pickColor('rose')"></button>
+  <button class="color-btn" style="background:brown" onclick="pickColor('marron')"></button>
+  <button class="color-btn" style="background:grey" onclick="pickColor('gris')"></button>
+  <button class="color-btn" style="background:black" onclick="pickColor('noir')"></button>
+  <button class="color-btn" style="background:white; border:1px solid #ccc;" onclick="pickColor('blanc')"></button>
+</div>
+
+    <div id="color-selector">
+      <div class="color-slot" data-index="0"></div>
+      <div class="color-slot" data-index="1"></div>
+      <div class="color-slot" data-index="2"></div>
+      <div class="color-slot" data-index="3"></div>
+      <br>
+        <button onclick="resetColors()">Réinitialiser</button>
+    </div>
+
+    <div id="video" style="display:none;">
+      <iframe src="https://www.youtube.com/embed/Yseta6WtuwU" title="Vidéo Histoire 3"  allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <footer>
+    <!--Preuve vérificator-->
 <p>
     <a href="https://jigsaw.w3.org/css-validator/check/referer">
         <img style="border:0;width:88px;height:31px"
@@ -133,46 +177,27 @@
             alt="Valid CSS!" />
     </a>
 </p>
-  </footer>
+  </footer>  
   
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
-
-<!-- 🔲 Overlay -->
+<script src="assets/js/global_timer.js" defer></script>
+  <!-- 🔲 Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
 
 <!-- 🔐 Modal Login -->
 <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <h2>Connexion</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Pseudo" required><br>
+    <input type="email" name="email" placeholder="Email (optionnel)"><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+    <button type="button" id="registerBtn">Créer un compte</button>
+  </form>
+  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
 </div>
 
 <!-- 📇 Modal Crédits -->
@@ -205,5 +230,10 @@
   </div>
 </div>
 
+
+<script src="assets/js/global_timer.js" defer></script>
+
 </body>
 </html>
+
+<script>(function(){var el=document.getElementById('answerEchoColors');if(!el)return;function r(){try{var seq=(window.colorSequence||[]).map(s=>s||'—');el.innerHTML='Votre saisie : '+seq.join(' · ');}catch(_){} } setInterval(r,200); r();})();</script>

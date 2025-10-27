@@ -2,10 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Index</title>
+  <title>Énigme 8</title>
   <link rel="icon" href="assets/img/favicon.ico">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+
 
 <style>
 .spoiler-wrap{
@@ -116,14 +117,27 @@
     <a href="#" id="openCredits">Crédits</a>
     <a href="#" id="openClassement">Classement</a>
   </nav>
-  </header>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
+</header>
 
-  <main>
-    <h1>Bienvenue dans la chasse a la Bête du Gévaudan!</h1>
-    <h2>Cliquez pour commencer et surtout Bon courage...</h2>
-    <a href="enigmeintro.html" id="startLink" class="start-link requires-auth" aria-disabled="true">Démarrer</a>
-
-  </main>
+  <h1>Énigme 8</h1>
+<div class="video-container">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/7YVmtEeJ6hM" allowfullscreen></iframe>
+</div>
+<div id="input-container" style="text-align:center;">
+  <p>Entrez votre réponse :</p>
+  <input type="text" id="answer" placeholder="Réponse">
+  <br>
+  <button onclick="validate()">Valider</button>
+</div>
+<div id="video" style="display:none;">
+  <iframe src="https://www.youtube.com/embed/DNns1BLemBQ" title="Vidéo Histoire 8" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+<script src="assets/js/zoneTexteHandler.js" defer></script>
+<script>
+  function validate() { checkZoneTexteAnswer("answer", ["camembert"], () => { const __v=document.getElementById("video");if(__v){__v.style.display="block";}
+setTimeout(()=>{ window.location.href = "enigme9.html"; }, 99000); }); }
+</script>
 
   <footer>
 <p>
@@ -133,46 +147,27 @@
             alt="Valid CSS!" />
     </a>
 </p>
-  </footer>
-  
+</footer>
+
 <script src="assets/js/utilities.js" defer></script>
 <script src="assets/js/manager.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/classement.js" defer></script>
-
-<!-- 🔲 Overlay -->
+<script src="assets/js/global_timer.js" defer></script>
+  <!-- 🔲 Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
 
 <!-- 🔐 Modal Login -->
 <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Connexion / Inscription</h2>
-
-    <!-- Inscription -->
-    <form id="registerForm" class="auth-form">
-      <h3>Créer un compte</h3>
-      <input type="text"     id="reg-username" name="username"  placeholder="Pseudo" required>
-      <input type="email"    id="reg-email"    name="email"     placeholder="Email (facultatif)">
-      <input type="password" id="reg-password" name="password"  placeholder="Mot de passe" required>
-
-      <label class="rgpd-consent">
-        <input type="checkbox" id="reg-consent" name="consent" value="1" required>
-        J’accepte la
-        <a href="privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a>.
-      </label>
-
-      <button type="submit">Créer un compte</button>
-    </form>
-
-    <!-- Connexion -->
-    <form id="loginForm" class="auth-form">
-      <h3>Se connecter</h3>
-      <input type="text"     id="login-username" name="username"  placeholder="Pseudo" required>
-      <input type="password" id="login-password" name="password"  placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <h2>Connexion</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Pseudo" required><br>
+    <input type="email" name="email" placeholder="Email (optionnel)"><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+    <button type="button" id="registerBtn">Créer un compte</button>
+  </form>
+  <p id="loginMsg" style="margin-top:8px;color:#9ecbff;"></p>
 </div>
 
 <!-- 📇 Modal Crédits -->
@@ -205,5 +200,8 @@
   </div>
 </div>
 
+
+
+<script src="assets/js/global_timer.js" defer></script>
 </body>
 </html>

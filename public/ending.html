@@ -1,34 +1,237 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fin de partie</title>
-  <link rel="stylesheet" href="./css/topbar.css" />
+  <meta charset="UTF-8">
+  <title>Fin du jeu</title>
+  <link rel="icon" href="assets/img/favicon.ico">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+
+<style>
+.spoiler-wrap{
+  position:relative;
+  display:inline-block;
+  max-width:100%;
+}
+.spoiler-wrap img.spoilered{
+  filter:blur(14px) brightness(0.7);
+  transition:filter .25s ease;
+  cursor:pointer;
+}
+.spoiler-wrap.revealed img.spoilered{
+  filter:none;
+}
+.spoiler-badge{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  padding:.5rem .75rem;
+  background:rgba(0,0,0,.7);
+  color:#fff;
+  border-radius:.5rem;
+  font-size:.9rem;
+  user-select:none;
+  pointer-events:none;
+}
+.spoiler-hint{
+  position:absolute;
+  right:.5rem;bottom:.5rem;
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  padding:.25rem .5rem;
+  border-radius:.375rem;
+  font-size:.75rem;
+  pointer-events:none;
+  }
+</style>
+<script>
+(function(){
+  function shouldSpoiler(img){
+    if (!img) return false;
+    if (img.dataset && (img.dataset.nospoiler==="1" || img.dataset.nospoiler==="true")) return false;
+    var cls = (img.className||"").toLowerCase();
+    if (/(logo|favicon|icon)/.test(cls)) return false;
+    var src = (img.getAttribute("src")||"").toLowerCase();
+    if (/(logo|favicon|icon|header)/.test(src)) return false;
+    // Skip very small images (likely UI)
+    if (img.naturalWidth && img.naturalWidth < 64) return false;
+    // If inside header/nav/footer
+    var el = img;
+    while (el){
+      var tag = (el.tagName||"").toLowerCase();
+      var id = (el.id||"").toLowerCase();
+      var c = (el.className||"").toLowerCase();
+      if (/(header|nav|footer)/.test(tag) || /(header|nav|footer)/.test(id) || /(header|nav|footer)/.test(c)) return false;
+      el = el.parentElement;
+    }
+    return true;
+  }
+  function wrapSpoiler(img){
+    if (img.closest('.spoiler-wrap')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'spoiler-wrap';
+    var badge = document.createElement('div');
+    badge.className = 'spoiler-badge';
+    badge.textContent = 'Image masquée';
+    var hint = document.createElement('div');
+    hint.className = 'spoiler-hint';
+    hint.textContent = 'Cliquer pour révéler';
+    img.classList.add('spoilered');
+    img.parentNode.insertBefore(wrap, img);
+    wrap.appendChild(img);
+    wrap.appendChild(badge);
+    wrap.appendChild(hint);
+    wrap.addEventListener('click', function(){
+      wrap.classList.toggle('revealed');
+    });
+  }
+  function initSpoilers(){
+    var imgs = Array.prototype.slice.call(document.images || []);
+    imgs.forEach(function(img){
+      if (shouldSpoiler(img)) {
+        if (img.complete) {
+          wrapSpoiler(img);
+        } else {
+          img.addEventListener('load', function(){ wrapSpoiler(img); }, {once:true});
+        }
+      }
+    });
+  }
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initSpoilers);
+  } else {
+    initSpoilers();
+  }
+})();
+</script>
+
 </head>
 <body>
-  <header class="eg-topbar">
-    <div>ðŸŽ‰ Fin</div>
-    <div class="eg-timer">â± <span id="global-timer">00:00:00</span></div>
+  <header>
+  <img src="assets/img/logo.png" alt="logo" class="logo">
+  <nav class="header-links">
+    <a href="#" id="openLogin" data-auth="guest" onclick="openModal('loginModal')">Se connecter</a>
+    <a href="#" id="logoutBtn" data-auth="logged" style="display:none;">Se déconnecter</a>
+    <a href="#" id="openContact">Contact</a>
+    <a href="#" id="openCredits">Crédits</a>
+    <a href="#" id="openClassement">Classement</a>
+  </nav>
+  <span id="timer" style="margin-left:12px;font-weight:bold;"></span>
   </header>
+
   <main>
     <h1>Bravo !</h1>
-    <p>Temps total : <span id="final-time">â€”</span></p>
-    <a href="classement.html">Voir le classement</a>
+    <p>Vous avez terminé le jeu.</p>
+    <button id="showClassement" class="classement-link">Voir le classement</button>
   </main>
 
-  <script type="module">
-    import { storage } from './js/apiClient.js';
-    import { mountGlobalTimer } from './js/timer.js';
-    mountGlobalTimer('#global-timer');
-    const start = storage.getTimerStart();
-    if (start) {
-      const ms = Date.now() - new Date(start).getTime();
-      const s = Math.floor(ms / 1000);
-      const h = Math.floor(s / 3600), m = Math.floor((s%3600)/60), sec = s%60;
-      const pad = (n)=> String(n).padStart(2,'0');
-      document.getElementById('final-time').textContent = `${pad(h)}:${pad(m)}:${pad(sec)}`;
+  <footer>
+<p>
+    <a href="https://jigsaw.w3.org/css-validator/check/referer">
+        <img style="border:0;width:88px;height:31px"
+            src="https://jigsaw.w3.org/css-validator/images/vcss-blue"
+            alt="Valid CSS!" />
+    </a>
+</p>
+  </footer>
+
+  <!-- Votre script principal front (auth + timer + modales) -->
+  <script src="assets/js/app.js" defer></script>
+  <script src="assets/js/classement.js" defer></script>
+  <script src="global_timer.js" defer></script>
+
+  <!-- 🔲 Overlay -->
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <!-- 📇 Modal Crédits -->
+  <div id="modalCredits" class="modal">
+    <h2>Crédits</h2>
+    <p>Escape Game réalisé par <b>Groom Escape</b> <i>(Yann S. & Maxime "Freki" Orange)</i><br>
+      Coder par <b>Anima'Escape</b> <i>(Maxime "Freki" Orange)</i> <br>
+      Acteur : Hafid D. , Yann S. , Maxime "Freki" Orange <br>
+      <i>Escape réalisé en collaboration avec la ville de Clermont-Ferrand lors de la pandémie, en février 2020 !</i>
+    </p>
+  </div>
+
+  <!-- 📬 Modal Contact -->
+  <div id="modalContact" class="modal">
+    <h2>Contact</h2>
+    <form>
+      <input type="text" placeholder="Votre nom" required><br>
+      <input type="email" placeholder="Votre email" required><br>
+      <textarea placeholder="Votre message" required></textarea><br>
+      <button type="submit">Envoyer</button>
+    </form>
+  </div>
+
+  <!-- 🏆 Modal Classement -->
+  <div id="classementModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('classementModal')">&times;</span>
+      <h2>Classement</h2>
+      <ul id="classementList" class="leaderboard"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Helpers globaux au cas où (utiles si app.js ne les expose pas)
+    window.openModal = window.openModal || function(id){
+      var overlay = document.getElementById('modalOverlay');
+      var el = document.getElementById(id);
+      if (overlay) overlay.style.display = 'block';
+      if (el) el.style.display = 'block';
+    };
+    window.closeModal = window.closeModal || function(id){
+      var overlay = document.getElementById('modalOverlay');
+      var el = document.getElementById(id);
+      if (overlay) overlay.style.display = 'none';
+      if (el) el.style.display = 'none';
+    };
+
+    // Fige le run à l'arrivée (temps final en BdD)
+    fetch('/api/complete_run.php', { method:'POST', credentials:'include' })
+      .catch(()=>{});
+
+    // Format mm:ss.mmm
+    function fmt(ms){
+      const m = Math.floor(ms/60000);
+      const s = Math.floor((ms%60000)/1000);
+      const ms3 = (ms%1000).toString().padStart(3,'0');
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ms3}`;
     }
+
+    async function loadLeaderboard(){
+      try{
+        const res = await fetch('/api/leaderboard.php', { credentials:'include' });
+        const data = await res.json();
+        const ul = document.getElementById('classementList');
+        ul.innerHTML = '';
+        data.rows.forEach((r,i)=>{
+          const li = document.createElement('li');
+          if (i===0) li.classList.add('gold');
+          else if (i===1) li.classList.add('silver');
+          else if (i===2) li.classList.add('bronze');
+          li.textContent = `${i+1}. ${r.username} — ${fmt(+r.total_elapsed_ms)}`;
+          ul.appendChild(li);
+        });
+      }catch(e){
+        document.getElementById('classementList').innerHTML = '<li>Classement indisponible</li>';
+      }
+    }
+
+    document.getElementById('showClassement')?.addEventListener('click', ()=>{
+      openModal('classementModal');
+      loadLeaderboard();
+    });
+    document.getElementById('openClassement')?.addEventListener('click', (e)=>{
+      e.preventDefault(); openModal('classementModal'); loadLeaderboard();
+    });
+    document.getElementById('openContact')?.addEventListener('click', (e)=>{
+      e.preventDefault(); openModal('modalContact');
+    });
+    document.getElementById('openCredits')?.addEventListener('click', (e)=>{
+      e.preventDefault(); openModal('modalCredits');
+    });
   </script>
 </body>
 </html>
