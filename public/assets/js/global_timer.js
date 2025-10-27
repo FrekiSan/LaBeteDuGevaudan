@@ -1,29 +1,59 @@
 // global_timer.js
 (function(){
+  if (window.__escapeTimerLoopInitialized) return;
+  window.__escapeTimerLoopInitialized = true;
+
   const el = document.getElementById('global-timer')|| document.getElementById('timer');
   if(!el) return;
 
-  const STORAGE_KEY = 'globalTimerStartISO';
-  let startISO = localStorage.getItem(STORAGE_KEY);
+  const TIMER_STATE_KEY = 'escape_timer_state';
 
-  // If no start time exists, don't overwrite in case other pages set it;
-  // create one here as fallback.
-  if(!startISO){
-    startISO = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, startISO);
+  function readState(){
+    try {
+      const raw = localStorage.getItem(TIMER_STATE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return (parsed && typeof parsed === 'object') ? parsed : null;
+    } catch (err) {
+      return null;
+    }
   }
 
-  const start = new Date(startISO);
+  function computeElapsed(state){
+    if (!state) return null;
+    let total = Number(state.totalElapsedMs || 0);
+    if (state.currentStartISO) {
+      const start = Date.parse(state.currentStartISO);
+      if (!Number.isNaN(start)) {
+        total += Math.max(0, Date.now() - start);
+      }
+    }
+    return total;
+  }
+
+  function fallbackElapsed(){
+    const iso = localStorage.getItem('globalTimerStartISO');
+    if (!iso) return 0;
+    const start = Date.parse(iso);
+    if (Number.isNaN(start)) return 0;
+    return Math.max(0, Date.now() - start);
+  }
 
   function fmt(n){ return String(n).padStart(2,'0'); }
+
   function tick(){
-    const now = new Date();
-    let delta = Math.max(0, Math.floor((now - start)/1000));
-    const h = Math.floor(delta/3600);
-    const m = Math.floor((delta%3600)/60);
-    const s = delta%60;
+    const state = readState();
+    let ms = computeElapsed(state);
+    if (ms === null) {
+      ms = fallbackElapsed();
+    }
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds/3600);
+    const m = Math.floor((totalSeconds%3600)/60);
+    const s = totalSeconds%60;
     el.textContent = `${fmt(h)}:${fmt(m)}:${fmt(s)}`;
     requestAnimationFrame(tick);
   }
+
   tick();
 })();

@@ -138,100 +138,63 @@
   <!-- Votre script principal front (auth + timer + modales) -->
   <script src="assets/js/app.js" defer></script>
   <script src="assets/js/classement.js" defer></script>
-  <script src="global_timer.js" defer></script>
-
-  <!-- 🔲 Overlay -->
-  <div id="modalOverlay" class="modal-overlay"></div>
-
-  <!-- 📇 Modal Crédits -->
-  <div id="modalCredits" class="modal">
-    <h2>Crédits</h2>
-    <p>Escape Game réalisé par <b>Groom Escape</b> <i>(Yann S. & Maxime "Freki" Orange)</i><br>
-      Coder par <b>Anima'Escape</b> <i>(Maxime "Freki" Orange)</i> <br>
-      Acteur : Hafid D. , Yann S. , Maxime "Freki" Orange <br>
-      <i>Escape réalisé en collaboration avec la ville de Clermont-Ferrand lors de la pandémie, en février 2020 !</i>
-    </p>
-  </div>
-
-  <!-- 📬 Modal Contact -->
-  <div id="modalContact" class="modal">
-    <h2>Contact</h2>
-    <form>
-      <input type="text" placeholder="Votre nom" required><br>
-      <input type="email" placeholder="Votre email" required><br>
-      <textarea placeholder="Votre message" required></textarea><br>
-      <button type="submit">Envoyer</button>
-    </form>
-  </div>
-
-  <!-- 🏆 Modal Classement -->
-  <div id="classementModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('classementModal')">&times;</span>
-      <h2>Classement</h2>
-      <ul id="classementList" class="leaderboard"></ul>
-    </div>
-  </div>
-
+  <script src="assets/js/global_timer.js" defer></script>
   <script>
     // Helpers globaux au cas où (utiles si app.js ne les expose pas)
     window.openModal = window.openModal || function(id){
       var overlay = document.getElementById('modalOverlay');
       var el = document.getElementById(id);
-      if (overlay) overlay.style.display = 'block';
-      if (el) el.style.display = 'block';
+      if (overlay) {
+        overlay.classList.add('is-active');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      if (el) {
+        el.classList.add('is-active');
+        el.setAttribute('aria-hidden', 'false');
+        el.focus({ preventScroll: true });
+      }
+      document.body.classList.add('modal-open');
     };
     window.closeModal = window.closeModal || function(id){
       var overlay = document.getElementById('modalOverlay');
       var el = document.getElementById(id);
-      if (overlay) overlay.style.display = 'none';
-      if (el) el.style.display = 'none';
+      if (el) {
+        el.classList.remove('is-active');
+        el.setAttribute('aria-hidden', 'true');
+      }
+      if (overlay) {
+        var anyOpen = Array.from(document.querySelectorAll('.modal')).some(function(modal){
+          return modal.classList.contains('is-active');
+        });
+        if (!anyOpen) {
+          overlay.classList.remove('is-active');
+          overlay.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('modal-open');
+        }
+      }
     };
 
     // Fige le run à l'arrivée (temps final en BdD)
     fetch('/api/complete_run.php', { method:'POST', credentials:'include' })
+      .then(res => res.json().catch(()=>null))
+      .then((payload) => {
+        if (payload && Object.prototype.hasOwnProperty.call(payload, 'total_elapsed_ms')) {
+          try {
+            const raw = localStorage.getItem('escape_timer_state');
+            const state = raw ? JSON.parse(raw) : {};
+            state.totalElapsedMs = Number(payload.total_elapsed_ms) || 0;
+            state.currentStartISO = null;
+            if (payload.user_id && !state.userId) {
+              state.userId = payload.user_id;
+            }
+            localStorage.setItem('escape_timer_state', JSON.stringify(state));
+          } catch (err) {}
+        }
+        if (typeof window.loadClassement === 'function') {
+          window.loadClassement();
+        }
+      })
       .catch(()=>{});
-
-    // Format mm:ss.mmm
-    function fmt(ms){
-      const m = Math.floor(ms/60000);
-      const s = Math.floor((ms%60000)/1000);
-      const ms3 = (ms%1000).toString().padStart(3,'0');
-      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ms3}`;
-    }
-
-    async function loadLeaderboard(){
-      try{
-        const res = await fetch('/api/leaderboard.php', { credentials:'include' });
-        const data = await res.json();
-        const ul = document.getElementById('classementList');
-        ul.innerHTML = '';
-        data.rows.forEach((r,i)=>{
-          const li = document.createElement('li');
-          if (i===0) li.classList.add('gold');
-          else if (i===1) li.classList.add('silver');
-          else if (i===2) li.classList.add('bronze');
-          li.textContent = `${i+1}. ${r.username} — ${fmt(+r.total_elapsed_ms)}`;
-          ul.appendChild(li);
-        });
-      }catch(e){
-        document.getElementById('classementList').innerHTML = '<li>Classement indisponible</li>';
-      }
-    }
-
-    document.getElementById('showClassement')?.addEventListener('click', ()=>{
-      openModal('classementModal');
-      loadLeaderboard();
-    });
-    document.getElementById('openClassement')?.addEventListener('click', (e)=>{
-      e.preventDefault(); openModal('classementModal'); loadLeaderboard();
-    });
-    document.getElementById('openContact')?.addEventListener('click', (e)=>{
-      e.preventDefault(); openModal('modalContact');
-    });
-    document.getElementById('openCredits')?.addEventListener('click', (e)=>{
-      e.preventDefault(); openModal('modalCredits');
-    });
   </script>
 </body>
 </html>
